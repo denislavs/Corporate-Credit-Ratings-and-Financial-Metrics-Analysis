@@ -1,8 +1,2 @@
 # Recognize .sql files as SQL
 *.sql linguist-language=SQL
-
-# Treat Jupyter notebooks as SQL if they contain significant SQL queries
-*.ipynb linguist-language=SQL
-
-# Force Python files containing SQL to be recognized as SQL
-*.py linguist-language=SQL
