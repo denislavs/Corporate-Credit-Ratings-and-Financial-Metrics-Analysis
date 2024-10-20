@@ -1,2 +1,2 @@
-# Recognize .sql files as SQL
+# Treat all .sql files as SQL
 *.sql linguist-language=SQL
