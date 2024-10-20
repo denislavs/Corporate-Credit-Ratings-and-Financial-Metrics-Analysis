@@ -1,7 +1,699 @@
--- 1.1 Data Overview
--- Query to quickly understand the structure of the dataset and its basic contents by inspecting the first 10 rows.
+-- QUERY 1.1 Data Overview
 
+-- Query to quickly understand the structure of the dataset and its basic contents by inspecting the first 10 rows.
 SELECT *
 FROM Corp_rate
 LIMIT 10
 
+
+-- QUERY 1.2 Missing Values
+
+-- Query to identify any missing data and determine if certain columns or rows need attention before deeper analysis.
+SELECT 
+    SUM(CASE WHEN RatingAgency IS NULL THEN 1 ELSE 0 END) AS RatingAgency,
+    SUM(CASE WHEN Corporation IS NULL THEN 1 ELSE 0 END) AS Corporation,
+    SUM(CASE WHEN Rating IS NULL THEN 1 ELSE 0 END) AS Rating,
+    SUM(CASE WHEN RatingDate IS NULL THEN 1 ELSE 0 END) AS RatingDate,
+    SUM(CASE WHEN CIK IS NULL THEN 1 ELSE 0 END) AS CIK,
+    SUM(CASE WHEN BinaryRating IS NULL THEN 1 ELSE 0 END) AS BinaryRating,
+    SUM(CASE WHEN SICCode IS NULL THEN 1 ELSE 0 END) AS SICCode,
+    SUM(CASE WHEN Sector IS NULL THEN 1 ELSE 0 END) AS Sector,
+    SUM(CASE WHEN Ticker IS NULL THEN 1 ELSE 0 END) AS Ticker,
+    SUM(CASE WHEN CurrentRatio IS NULL THEN 1 ELSE 0 END) AS CurrentRatio,
+    SUM(CASE WHEN LongTermDebt_Capital IS NULL THEN 1 ELSE 0 END) AS LongTermDebt_Capital,
+    SUM(CASE WHEN Debt_EquityRatio IS NULL THEN 1 ELSE 0 END) AS Debt_EquityRatio,
+    SUM(CASE WHEN GrossMargin IS NULL THEN 1 ELSE 0 END) AS GrossMargin,
+    SUM(CASE WHEN OperatingMargin IS NULL THEN 1 ELSE 0 END) AS OperatingMargin,
+    SUM(CASE WHEN EBITMargin IS NULL THEN 1 ELSE 0 END) AS EBITMargin,
+    SUM(CASE WHEN EBITDAMargin IS NULL THEN 1 ELSE 0 END) AS EBITDAMargin,
+    SUM(CASE WHEN PreTaxProfitMargin IS NULL THEN 1 ELSE 0 END) AS PreTaxProfitMargin,
+    SUM(CASE WHEN NetProfitMargin IS NULL THEN 1 ELSE 0 END) AS NetProfitMargin,
+    SUM(CASE WHEN AssetTurnover IS NULL THEN 1 ELSE 0 END) AS AssetTurnover,
+    SUM(CASE WHEN ROE_ReturnOnEquity IS NULL THEN 1 ELSE 0 END) AS ROE_ReturnOnEquity,
+    SUM(CASE WHEN ReturnOnTangibleEquity IS NULL THEN 1 ELSE 0 END) AS ReturnOnTangibleEquity,
+    SUM(CASE WHEN ROA_ReturnOnAssets IS NULL THEN 1 ELSE 0 END) AS ROA_ReturnOnAssets,
+    SUM(CASE WHEN ROI_ReturnOnInvestment IS NULL THEN 1 ELSE 0 END) AS ROI_ReturnOnInvestment,
+    SUM(CASE WHEN OperatingCashFlowPerShare IS NULL THEN 1 ELSE 0 END) AS OperatingCashFlowPerShare,
+    SUM(CASE WHEN FreeCashFlowPerShare IS NULL THEN 1 ELSE 0 END) AS FreeCashFlowPerShare
+FROM Corp_rate;
+
+
+-- QUERY 1.3 Duplicated Records
+
+-- Query to check for duplicated records and ensure that the dataset is clean and free from redundancy.
+-- It displays the total of corporations included in the dataset ordered by their record count.
+SELECT 
+    Corporation, 
+	Ticker,
+	Sector,
+	RatingDate,
+	RatingAgency,
+    SUM(COUNT(Corporation)) OVER (PARTITION BY Corporation) AS "Count of Total Records"
+FROM Corp_rate as cr
+GROUP BY Corporation
+ORDER BY 
+	"Count of Total Records" DESC, RatingDate DESC 
+LIMIT 10
+
+
+-- QUERY 1.3 Duplicates Count
+
+-- Query to show the total records count and the destinct records count. 
+-- It eliminates duplicated corporation records using the latest date of rating.
+SELECT 
+    COUNT(Corporation) AS "Total Records", 
+	(SELECT
+		COUNT(DISTINCT Corporation)
+	FROM Corp_rate as cr
+	WHERE RatingDate = (
+		SELECT MAX(RatingDate)
+		FROM Corp_rate AS sub_cr
+		WHERE sub_cr.Corporation = cr.Corporation
+		  AND sub_cr.RatingAgency = cr.RatingAgency)) AS "Distinct Record Count",
+	(COUNT(Corporation) - (SELECT
+		COUNT(DISTINCT Corporation)
+	FROM Corp_rate as cr
+	WHERE RatingDate = (
+		SELECT MAX(RatingDate)
+		FROM Corp_rate AS sub_cr
+		WHERE sub_cr.Corporation = cr.Corporation
+		  AND sub_cr.RatingAgency = cr.RatingAgency))) AS Duplicates
+FROM Corp_rate
+
+
+-- QUERY 1.4 Descriptive Statistics
+
+-- Query to calculate basic descriptive statistics (count, mean, min, quartiles,  median, and max) for each financial ratio.
+-- Outliers may be inferred based on extreme values (min/max) in comparison to the mean.
+WITH OrderedRatios AS (
+    SELECT 
+        CurrentRatio,
+		LongTermDebt_Capital,
+		Debt_EquityRatio,
+        GrossMargin,
+        OperatingMargin,
+		EBITMargin,
+		EBITDAMargin,
+		PreTaxProfitMargin,
+		NetProfitMargin,
+		AssetTurnover,
+        ROE_ReturnOnEquity,
+		ReturnOnTangibleEquity,
+		ROA_ReturnOnAssets,
+		ROI_ReturnOnInvestment,
+		OperatingCashFlowPerShare,
+		FreeCashFlowPerShare,
+        ROW_NUMBER() OVER (ORDER BY CurrentRatio) AS CurrentRatioRank,
+		ROW_NUMBER() OVER (ORDER BY LongTermDebt_Capital) AS LongTermDebt_CapitalRank,
+		ROW_NUMBER() OVER (ORDER BY Debt_EquityRatio) AS Debt_EquityRatioRank,
+        ROW_NUMBER() OVER (ORDER BY GrossMargin) AS GrossMarginRank,
+        ROW_NUMBER() OVER (ORDER BY OperatingMargin) AS OperatingMarginRank,
+        ROW_NUMBER() OVER (ORDER BY EBITMargin) AS EBITMarginRank,
+        ROW_NUMBER() OVER (ORDER BY EBITDAMargin) AS EBITDAMarginRank,
+		ROW_NUMBER() OVER (ORDER BY PreTaxProfitMargin) AS PreTaxProfitMarginRank,
+		ROW_NUMBER() OVER (ORDER BY NetProfitMargin) AS NetProfitMarginRank,
+		ROW_NUMBER() OVER (ORDER BY AssetTurnover) AS AssetTurnoverRank,
+        ROW_NUMBER() OVER (ORDER BY ROE_ReturnOnEquity) AS ROE_ReturnOnEquityRank,
+        ROW_NUMBER() OVER (ORDER BY ReturnOnTangibleEquity) AS ReturnOnTangibleEquityRank,
+        ROW_NUMBER() OVER (ORDER BY ROA_ReturnOnAssets) AS ROA_ReturnOnAssetsRank,
+        ROW_NUMBER() OVER (ORDER BY ROI_ReturnOnInvestment) AS ROI_ReturnOnInvestmentRank,
+        ROW_NUMBER() OVER (ORDER BY OperatingCashFlowPerShare) AS OperatingCashFlowPerShareRank,
+        ROW_NUMBER() OVER (ORDER BY FreeCashFlowPerShare) AS FreeCashFlowPerShareRank,		
+        COUNT(*) OVER () AS TotalRows
+    FROM Corp_rate
+),
+Quartiles AS (
+    SELECT 
+        TotalRows,
+        (TotalRows + 1) / 4 AS Q1Pos,
+        (TotalRows + 1) / 2 AS MedianPos,
+        3 * (TotalRows + 1) / 4 AS Q3Pos
+    FROM OrderedRatios
+    LIMIT 1
+)
+SELECT 
+	"Current Ratio" AS Ratio,
+    -- Descriptive stats for Current Ratio
+    COUNT(CurrentRatio) AS Count,
+    AVG(CurrentRatio) AS Mean,
+    MIN(CurrentRatio) AS Min,
+    (SELECT CurrentRatio FROM OrderedRatios WHERE CurrentRatioRank = Q1Pos) AS Q1,
+    (SELECT CurrentRatio FROM OrderedRatios WHERE CurrentRatioRank = MedianPos) AS Median,
+    (SELECT CurrentRatio FROM OrderedRatios WHERE CurrentRatioRank = Q3Pos) AS Q3,
+	MAX(CurrentRatio) AS Max
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT 
+	"Long-term Debt to Capital" AS Ratio,
+    -- Descriptive stats for Long-term Debt to Capital
+    COUNT(LongTermDebt_Capital) AS Count,
+    AVG(LongTermDebt_Capital) AS Mean,
+    MIN(LongTermDebt_Capital) AS Min,
+    (SELECT LongTermDebt_Capital FROM OrderedRatios WHERE LongTermDebt_CapitalRank = Q1Pos) AS Q1,
+    (SELECT LongTermDebt_Capital FROM OrderedRatios WHERE LongTermDebt_CapitalRank = MedianPos) AS Median,
+    (SELECT LongTermDebt_Capital FROM OrderedRatios WHERE LongTermDebt_CapitalRank = Q3Pos) AS Q3,
+	MAX(LongTermDebt_Capital) AS Max
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT 
+	"Debt to Equity" AS Ratio,
+    -- Descriptive stats for Debt to Equity
+    COUNT(Debt_EquityRatio) AS Count,
+    AVG(Debt_EquityRatio) AS Mean,
+    MIN(Debt_EquityRatio) AS Min,
+    (SELECT Debt_EquityRatio FROM OrderedRatios WHERE Debt_EquityRatioRank = Q1Pos) AS Q1,
+    (SELECT Debt_EquityRatio FROM OrderedRatios WHERE Debt_EquityRatioRank = MedianPos) AS Median,
+    (SELECT Debt_EquityRatio FROM OrderedRatios WHERE Debt_EquityRatioRank = Q3Pos) AS Q3,
+	MAX(Debt_EquityRatio) AS Max
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT
+	"Gross Margin" AS Ratio,
+    -- Descriptive stats for Gross Margin
+    COUNT(GrossMargin) AS Count,
+    AVG(GrossMargin) AS Mean,
+    MIN(GrossMargin) AS Minn,
+    (SELECT GrossMargin FROM OrderedRatios WHERE GrossMarginRank = Q1Pos) AS Q1,
+    (SELECT GrossMargin FROM OrderedRatios WHERE GrossMarginRank = MedianPos) AS Median,
+    (SELECT GrossMargin FROM OrderedRatios WHERE GrossMarginRank = Q3Pos) AS Q3,
+	MAX(GrossMargin) AS Max
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT
+	"Operating Margin" AS Ratio,
+    -- Descriptive stats for Operating Margin
+    COUNT(OperatingMargin) AS Count,
+    AVG(OperatingMargin) AS Mean,
+    MIN(OperatingMargin) AS Min,
+    (SELECT OperatingMargin FROM OrderedRatios WHERE OperatingMarginRank = Q1Pos) AS Q1,
+    (SELECT OperatingMargin FROM OrderedRatios WHERE OperatingMarginRank = MedianPos) AS Median,
+    (SELECT OperatingMargin FROM OrderedRatios WHERE OperatingMarginRank = Q3Pos) AS Q3,
+	MAX(OperatingMargin) AS Max
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT
+	"EBIT Margin" AS Ratio,
+    -- Descriptive stats for EBIT Margin
+    COUNT(EBITMargin) AS Count,
+    AVG(EBITMargin) AS Mean,
+    MIN(EBITMargin) AS Min,
+    (SELECT EBITMargin FROM OrderedRatios WHERE EBITMarginRank = Q1Pos) AS Q1,
+    (SELECT EBITMargin FROM OrderedRatios WHERE EBITMarginRank = MedianPos) AS Median,
+    (SELECT EBITMargin FROM OrderedRatios WHERE EBITMarginRank = Q3Pos) AS Q3,
+	MAX(EBITMargin) AS Max
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT
+	"EBITDA Margin" AS Ratio,
+    -- Descriptive stats for EBITDA Margin
+    COUNT(EBITDAMargin) AS Count,
+    AVG(EBITDAMargin) AS Mean,
+    MIN(EBITDAMargin) AS Min,
+    (SELECT EBITDAMargin FROM OrderedRatios WHERE EBITDAMarginRank = Q1Pos) AS Q1,
+    (SELECT EBITDAMargin FROM OrderedRatios WHERE EBITDAMarginRank = MedianPos) AS Median,
+    (SELECT EBITDAMargin FROM OrderedRatios WHERE EBITDAMarginRank = Q3Pos) AS Q3,
+	MAX(EBITDAMargin) AS Max
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT
+	"Pre-tax Profit Margin" AS Ratio,
+    -- Descriptive stats for Pre-tax Profit Margin
+    COUNT(PreTaxProfitMargin) AS Count_Debt,
+    AVG(PreTaxProfitMargin) AS Mean_Debt,
+    MIN(PreTaxProfitMargin) AS Min_Debt,
+    (SELECT PreTaxProfitMargin FROM OrderedRatios WHERE PreTaxProfitMarginRank = Q1Pos) AS Q1,
+    (SELECT PreTaxProfitMargin FROM OrderedRatios WHERE PreTaxProfitMarginRank = MedianPos) AS Median,
+    (SELECT PreTaxProfitMargin FROM OrderedRatios WHERE PreTaxProfitMarginRank = Q3Pos) AS Q3_Debt,
+	MAX(PreTaxProfitMargin) AS Max_Debt
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT
+	"Net Profit Margin" AS Ratio,
+    -- Descriptive stats for Net Profit Margin
+    COUNT(NetProfitMargin) AS Count_Debt,
+    AVG(NetProfitMargin) AS Mean_Debt,
+    MIN(NetProfitMargin) AS Min_Debt,
+    (SELECT NetProfitMargin FROM OrderedRatios WHERE NetProfitMarginRank = Q1Pos) AS Q1,
+    (SELECT NetProfitMargin FROM OrderedRatios WHERE NetProfitMarginRank = MedianPos) AS Median,
+    (SELECT NetProfitMargin FROM OrderedRatios WHERE NetProfitMarginRank = Q3Pos) AS Q3_Debt,
+	MAX(NetProfitMargin) AS Max_Debt
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT
+	"Asset Turnover" AS Ratio,
+    -- Descriptive stats for Asset Turnover
+    COUNT(AssetTurnover) AS Count_Debt,
+    AVG(AssetTurnover) AS Mean_Debt,
+    MIN(AssetTurnover) AS Min_Debt,
+    (SELECT AssetTurnover FROM OrderedRatios WHERE AssetTurnoverRank = Q1Pos) AS Q1,
+    (SELECT AssetTurnover FROM OrderedRatios WHERE AssetTurnoverRank = MedianPos) AS Median,
+    (SELECT AssetTurnover FROM OrderedRatios WHERE AssetTurnoverRank = Q3Pos) AS Q3_Debt,
+	MAX(AssetTurnover) AS Max_Debt
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT
+	"Return on Equity" AS Ratio,
+    -- Descriptive stats for Return on Equity
+    COUNT(ROE_ReturnOnEquity) AS Count,
+    AVG(ROE_ReturnOnEquity) AS Mean,
+    MIN(ROE_ReturnOnEquity) AS Min,
+    (SELECT ROE_ReturnOnEquity FROM OrderedRatios WHERE ROE_ReturnOnEquityRank = Q1Pos) AS Q1,
+    (SELECT ROE_ReturnOnEquity FROM OrderedRatios WHERE ROE_ReturnOnEquityRank = MedianPos) AS Median,
+    (SELECT ROE_ReturnOnEquity FROM OrderedRatios WHERE ROE_ReturnOnEquityRank = Q3Pos) AS Q3,
+	MAX(ROE_ReturnOnEquity) AS Max
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT
+	"Return on Tangible Equity" AS Ratio,
+    -- Descriptive stats for Return on Tangible Equity
+    COUNT(ReturnOnTangibleEquity) AS Count,
+    AVG(ReturnOnTangibleEquity) AS Mean,
+    MIN(ReturnOnTangibleEquity) AS Min,
+    (SELECT ReturnOnTangibleEquity FROM OrderedRatios WHERE ReturnOnTangibleEquityRank = Q1Pos) AS Q1,
+    (SELECT ReturnOnTangibleEquity FROM OrderedRatios WHERE ReturnOnTangibleEquityRank = MedianPos) AS Median,
+    (SELECT ReturnOnTangibleEquity FROM OrderedRatios WHERE ReturnOnTangibleEquityRank = Q3Pos) AS Q3,
+	MAX(ReturnOnTangibleEquity) AS Max
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT
+	"Return on Assets" AS Ratio,
+    -- Descriptive stats for Return on Assets
+    COUNT(ROA_ReturnOnAssets) AS Count,
+    AVG(ROA_ReturnOnAssets) AS Mean,
+    MIN(ROA_ReturnOnAssets) AS Min,
+    (SELECT ROA_ReturnOnAssets FROM OrderedRatios WHERE ROA_ReturnOnAssetsRank = Q1Pos) AS Q1,
+    (SELECT ROA_ReturnOnAssets FROM OrderedRatios WHERE ROA_ReturnOnAssetsRank = MedianPos) AS Median,
+    (SELECT ROA_ReturnOnAssets FROM OrderedRatios WHERE ROA_ReturnOnAssetsRank = Q3Pos) AS Q3,
+	MAX(ROA_ReturnOnAssets) AS Max
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT
+	"Return on Investment" AS Ratio,
+    -- Descriptive stats for Return on Investment
+    COUNT(ROI_ReturnOnInvestment) AS Count,
+    AVG(ROI_ReturnOnInvestment) AS Mean,
+    MIN(ROI_ReturnOnInvestment) AS Min,
+    (SELECT ROI_ReturnOnInvestment FROM OrderedRatios WHERE ROI_ReturnOnInvestmentRank = Q1Pos) AS Q1,
+    (SELECT ROI_ReturnOnInvestment FROM OrderedRatios WHERE ROI_ReturnOnInvestmentRank = MedianPos) AS Median,
+    (SELECT ROI_ReturnOnInvestment FROM OrderedRatios WHERE ROI_ReturnOnInvestmentRank = Q3Pos) AS Q3,
+	MAX(ROI_ReturnOnInvestment) AS Max
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT
+	"Operating Cash Flow per Share" AS Ratio,
+    -- Descriptive stats for Operating Cash Flow per Share
+    COUNT(OperatingCashFlowPerShare) AS Count,
+    AVG(OperatingCashFlowPerShare) AS Mean,
+    MIN(OperatingCashFlowPerShare) AS Min,
+    (SELECT OperatingCashFlowPerShare FROM OrderedRatios WHERE OperatingCashFlowPerShareRank = Q1Pos) AS Q1,
+    (SELECT OperatingCashFlowPerShare FROM OrderedRatios WHERE OperatingCashFlowPerShareRank = MedianPos) AS Median,
+    (SELECT OperatingCashFlowPerShare FROM OrderedRatios WHERE OperatingCashFlowPerShareRank = Q3Pos) AS Q3,
+	MAX(OperatingCashFlowPerShare) AS Max
+FROM OrderedRatios, Quartiles
+UNION ALL
+SELECT
+	"Free Cash Flow per Share" AS Ratio,
+    -- Descriptive stats for Free Cash Flow per Share
+    COUNT(FreeCashFlowPerShare) AS Count,
+    AVG(FreeCashFlowPerShare) AS Mean,
+    MIN(FreeCashFlowPerShare) AS Min,
+    (SELECT FreeCashFlowPerShare FROM OrderedRatios WHERE FreeCashFlowPerShareRank = Q1Pos) AS Q1,
+    (SELECT FreeCashFlowPerShare FROM OrderedRatios WHERE FreeCashFlowPerShareRank = MedianPos) AS Median,
+    (SELECT FreeCashFlowPerShare FROM OrderedRatios WHERE FreeCashFlowPerShareRank = Q3Pos) AS Q3,
+	MAX(FreeCashFlowPerShare) AS Max
+FROM OrderedRatios, Quartiles;
+
+
+-- QUERY 2.1 Counts by Sector
+
+-- Query to display how many companies exist in each sector and how they are spread across key rating agencies.
+SELECT DISTINCT Sector,
+	COUNT(DISTINCT Corporation) AS "Corporation Count", 	
+	COUNT(DISTINCT RatingAgency) AS "Rating Agencies Count"
+FROM corp_rate AS cr
+WHERE RatingAgency in ("Standard & Poor's Ratings Services", "Moody's Investors Service", "Fitch Ratings") AND
+	RatingDate = (
+    SELECT MAX(RatingDate)
+    FROM Corp_rate AS sub_cr
+    WHERE sub_cr.Corporation = cr.Corporation
+      AND sub_cr.RatingAgency = cr.RatingAgency)
+GROUP BY Sector 
+ORDER BY COUNT(DISTINCT Corporation) DESC, Sector
+
+
+-- QUERY 2.2 Counts by Rating Agency
+
+-- Query summarize the number of distinct corporations and sectors per rating agency.
+-- Provides insight into the coverage and diversity of the dataset.
+SELECT 
+	RatingAgency AS "Rating Agency", 
+	COUNT(DISTINCT Corporation) AS "Corporation Count",
+	COUNT(DISTINCT Sector) AS "Sector Count"
+FROM Corp_rate AS cr
+WHERE RatingDate = (
+    SELECT MAX(RatingDate)
+    FROM Corp_rate AS sub_cr
+    WHERE sub_cr.Corporation = cr.Corporation
+      AND sub_cr.RatingAgency = cr.RatingAgency
+)
+GROUP BY RatingAgency
+ORDER BY RatingAgency;
+
+
+-- QUERY 2.3 Counts by Rating
+
+SELECT 
+	BinaryRating AS "Binary Rating", 
+	Rating, 
+	COUNT(DISTINCT Corporation) AS "Corporation Count", 	
+	COUNT(DISTINCT RatingAgency) AS "Rating Agencies Count", 
+	COUNT(DISTINCT Sector) AS "Sector Count"
+FROM Corp_rate AS cr
+WHERE RatingAgency in ("Standard & Poor's Ratings Services", "Moody's Investors Service", "Fitch Ratings") AND
+	RatingDate = (
+    SELECT MAX(RatingDate)
+    FROM Corp_rate AS sub_cr
+    WHERE sub_cr.Corporation = cr.Corporation
+      AND sub_cr.RatingAgency = cr.RatingAgency
+	  AND RatingAgency in ("Standard & Poor's Ratings Services", "Moody's Investors Service", "Fitch Ratings")
+)
+GROUP BY Rating
+ORDER BY CASE 
+    WHEN Rating = 'AAA' THEN 1
+    WHEN Rating = 'AA+' THEN 2
+    WHEN Rating = 'AA' THEN 3
+    WHEN Rating = 'AA-' THEN 4
+    WHEN Rating = 'A+' THEN 5
+	WHEN Rating = 'A' THEN 6
+	WHEN Rating = 'A-' THEN 7
+	WHEN Rating = 'BBB+' THEN 8
+	WHEN Rating = 'BBB' THEN 9
+	WHEN Rating = 'BBB-' THEN 10
+	WHEN Rating = 'BB+' THEN 11
+	WHEN Rating = 'BB' THEN 12
+	WHEN Rating = 'BB-' THEN 13
+	WHEN Rating = 'B+' THEN 14
+	WHEN Rating = 'B' THEN 15
+	WHEN Rating = 'B-' THEN 16
+	WHEN Rating = 'CCC+' THEN 17
+	WHEN Rating = 'CCC' THEN 18
+	WHEN Rating = 'CCC-' THEN 19
+	WHEN Rating = 'CC' THEN 20
+	WHEN Rating = 'C' THEN 21
+	ELSE 22
+END, RatingAgency
+
+
+-- QUERY 3.1 Ratios Mean by BinRating
+
+SELECT 
+	BinaryRating AS "Binary Rating",
+	AVG(CurrentRatio) AS "AVG CurrentRatio",
+    AVG(LongTermDebt_Capital) AS "AVG LongTermDebt_Capital",
+    AVG(Debt_EquityRatio) AS "AVG Debt_EquityRatio",
+    AVG(GrossMargin) AS "AVG GrossMargin",
+    AVG(OperatingMargin) AS "AVG OperatingMargin",
+    AVG(EBITMargin) AS "AVG EBITMargin",
+    AVG(EBITDAMargin) AS "AVG EBITDAMargin",
+    AVG(PreTaxProfitMargin) AS "AVG PreTaxProfitMargin",
+    AVG(NetProfitMargin) AS "AVG NetProfitMargin",
+    AVG(AssetTurnover) AS "AVG AssetTurnover",
+    AVG(ROE_ReturnOnEquity) AS "AVG ROE_ReturnOnEquity",
+    AVG(ReturnOnTangibleEquity) AS "AVG ReturnOnTangibleEquity",
+    AVG(ROA_ReturnOnAssets) AS "AVG ROA_ReturnOnAssets",
+    AVG(ROI_ReturnOnInvestment) AS "AVG ROI_ReturnOnInvestment",
+    AVG(OperatingCashFlowPerShare) AS "AVG OperatingCashFlowPerShare",
+    AVG(FreeCashFlowPerShare) AS "AVG FreeCashFlowPerShare"
+FROM corp_rate AS cr
+WHERE RatingAgency in ("Standard & Poor's Ratings Services", "Moody's Investors Service", "Fitch Ratings") AND
+	RatingDate = (
+    SELECT MAX(RatingDate)
+    FROM Corp_rate AS sub_cr
+    WHERE sub_cr.Corporation = cr.Corporation
+      AND sub_cr.RatingAgency = cr.RatingAgency)
+GROUP BY BinaryRating
+ORDER BY CASE 
+    WHEN Rating = 'AAA' THEN 1
+    WHEN Rating = 'AA+' THEN 2
+    WHEN Rating = 'AA' THEN 3
+    WHEN Rating = 'AA-' THEN 4
+    WHEN Rating = 'A+' THEN 5
+	WHEN Rating = 'A' THEN 6
+	WHEN Rating = 'A-' THEN 7
+	WHEN Rating = 'BBB+' THEN 8
+	WHEN Rating = 'BBB' THEN 9
+	WHEN Rating = 'BBB-' THEN 10
+	WHEN Rating = 'BB+' THEN 11
+	WHEN Rating = 'BB' THEN 12
+	WHEN Rating = 'BB-' THEN 13
+	WHEN Rating = 'B+' THEN 14
+	WHEN Rating = 'B' THEN 15
+	WHEN Rating = 'B-' THEN 16
+	WHEN Rating = 'CCC+' THEN 17
+	WHEN Rating = 'CCC' THEN 18
+	WHEN Rating = 'CCC-' THEN 19
+	WHEN Rating = 'CC' THEN 20
+	WHEN Rating = 'C' THEN 21
+	ELSE 22
+END
+
+
+-- QUERY 3.2 Ratios Mean by Investment Grade
+
+SELECT 
+    CASE
+        WHEN Rating = 'AAA' THEN 'Prime'
+        WHEN Rating IN ('AA+', 'AA', 'AA-') THEN 'High'
+        WHEN Rating IN ('A+', 'A', 'A-') THEN 'Upper Medium'
+        WHEN Rating IN ('BBB+', 'BBB', 'BBB-') THEN 'Lower Medium'
+        ELSE 'Other'
+    END AS "Investment Grade",
+    AVG(CurrentRatio) AS "AVG CurrentRatio",
+    AVG(LongTermDebt_Capital) AS "AVG LongTermDebt_Capital",
+    AVG(Debt_EquityRatio) AS "AVG Debt_EquityRatio",
+    AVG(GrossMargin) AS "AVG GrossMargin",
+    AVG(OperatingMargin) AS "AVG OperatingMargin",
+    AVG(EBITMargin) AS "AVG EBITMargin",
+    AVG(EBITDAMargin) AS "AVG EBITDAMargin",
+    AVG(PreTaxProfitMargin) AS "AVG PreTaxProfitMargin",
+    AVG(NetProfitMargin) AS "AVG NetProfitMargin",
+    AVG(AssetTurnover) AS "AVG AssetTurnover",
+    AVG(ROE_ReturnOnEquity) AS "AVG ROE_ReturnOnEquity",
+    AVG(ReturnOnTangibleEquity) AS "AVG ReturnOnTangibleEquity",
+    AVG(ROA_ReturnOnAssets) AS "AVG ROA_ReturnOnAssets",
+    AVG(ROI_ReturnOnInvestment) AS "AVG ROI_ReturnOnInvestment",
+    AVG(OperatingCashFlowPerShare) AS "AVG OperatingCashFlowPerShare",
+    AVG(FreeCashFlowPerShare) AS "AVG FreeCashFlowPerShare"
+FROM corp_rate AS cr
+WHERE RatingAgency IN ("Standard & Poor's Ratings Services", "Moody's Investors Service", "Fitch Ratings")
+  AND RatingDate = (
+      SELECT MAX(RatingDate)
+      FROM Corp_rate AS sub_cr
+      WHERE sub_cr.Corporation = cr.Corporation
+        AND sub_cr.RatingAgency = cr.RatingAgency
+  )
+  AND BinaryRating = 1
+GROUP BY "Investment Grade"
+ORDER BY 
+    CASE
+        WHEN "Investment Grade" = 'Prime' THEN 1
+        WHEN "Investment Grade" = 'High' THEN 2
+        WHEN "Investment Grade" = 'Upper Medium' THEN 3
+        WHEN "Investment Grade" = 'Lower Medium' THEN 4
+        ELSE 5
+    END;
+
+
+-- QUERY 3.3 Ratios Mean by Speculative Grade
+
+SELECT 
+    CASE
+        WHEN Rating IN ('BB+', 'BB', 'BB-') THEN 'Speculative'
+        WHEN Rating IN ('B+', 'B', 'B-') THEN 'Highly Speculative'
+        WHEN Rating IN ('CCC+', 'CCC', 'CCC-', 'CC', 'C') THEN 'Substantial Risk'
+		WHEN Rating IN ('D') THEN 'In default'
+        ELSE 'Other'
+    END AS "Speculative Grade",
+    AVG(CurrentRatio) AS "AVG CurrentRatio",
+    AVG(LongTermDebt_Capital) AS "AVG LongTermDebt_Capital",
+    AVG(Debt_EquityRatio) AS "AVG Debt_EquityRatio",
+    AVG(GrossMargin) AS "AVG GrossMargin",
+    AVG(OperatingMargin) AS "AVG OperatingMargin",
+    AVG(EBITMargin) AS "AVG EBITMargin",
+    AVG(EBITDAMargin) AS "AVG EBITDAMargin",
+    AVG(PreTaxProfitMargin) AS "AVG PreTaxProfitMargin",
+    AVG(NetProfitMargin) AS "AVG NetProfitMargin",
+    AVG(AssetTurnover) AS "AVG AssetTurnover",
+    AVG(ROE_ReturnOnEquity) AS "AVG ROE_ReturnOnEquity",
+    AVG(ReturnOnTangibleEquity) AS "AVG ReturnOnTangibleEquity",
+    AVG(ROA_ReturnOnAssets) AS "AVG ROA_ReturnOnAssets",
+    AVG(ROI_ReturnOnInvestment) AS "AVG ROI_ReturnOnInvestment",
+    AVG(OperatingCashFlowPerShare) AS "AVG OperatingCashFlowPerShare",
+    AVG(FreeCashFlowPerShare) AS "AVG FreeCashFlowPerShare"
+FROM corp_rate AS cr
+WHERE RatingAgency IN ("Standard & Poor's Ratings Services", "Moody's Investors Service", "Fitch Ratings")
+  AND RatingDate = (
+      SELECT MAX(RatingDate)
+      FROM Corp_rate AS sub_cr
+      WHERE sub_cr.Corporation = cr.Corporation
+        AND sub_cr.RatingAgency = cr.RatingAgency
+  )
+  AND BinaryRating = 0
+GROUP BY "Speculative Grade"
+ORDER BY 
+    CASE
+        WHEN "Speculative Grade" = 'Speculative' THEN 1
+        WHEN "Speculative Grade" = 'Highly Speculative' THEN 2
+        WHEN "Speculative Grade" = 'Substantial Risk' THEN 3
+        WHEN "Speculative Grade" = 'In default' THEN 4
+        ELSE 5
+    END;
+
+
+-- QUERY 4.1 Top Sectors
+
+SELECT DISTINCT 
+	Sector, 
+	SUM(COUNT(Corporation)) OVER (PARTITION BY Sector) AS "Corporation Count",
+	AVG(CurrentRatio) AS "AVG CurrentRatio",
+    AVG(LongTermDebt_Capital) AS "AVG LongTermDebt_Capital",
+    AVG(Debt_EquityRatio) AS "AVG Debt_EquityRatio",
+    AVG(GrossMargin) AS "AVG GrossMargin",
+    AVG(OperatingMargin) AS "AVG OperatingMargin",
+    AVG(EBITMargin) AS "AVG EBITMargin",
+    AVG(EBITDAMargin) AS "AVG EBITDAMargin",
+    AVG(PreTaxProfitMargin) AS "AVG PreTaxProfitMargin",
+    AVG(NetProfitMargin) AS "AVG NetProfitMargin",
+    AVG(AssetTurnover) AS "AVG AssetTurnover",
+    AVG(ROE_ReturnOnEquity) AS "AVG ROE_ReturnOnEquity",
+    AVG(ReturnOnTangibleEquity) AS "AVG ReturnOnTangibleEquity",
+    AVG(ROA_ReturnOnAssets) AS "AVG ROA_ReturnOnAssets",
+    AVG(ROI_ReturnOnInvestment) AS "AVG ROI_ReturnOnInvestment",
+    AVG(OperatingCashFlowPerShare) AS "AVG OperatingCashFlowPerShare",
+    AVG(FreeCashFlowPerShare) AS "AVG FreeCashFlowPerShare"
+FROM corp_rate as cr
+WHERE BinaryRating = 1 AND RatingAgency in ("Standard & Poor's Ratings Services", "Moody's Investors Service", "Fitch Ratings")
+  AND RatingDate = (
+    SELECT MAX(RatingDate)
+    FROM Corp_rate AS sub_cr
+    WHERE sub_cr.Corporation = cr.Corporation
+      AND sub_cr.RatingAgency = "Standard & Poor's Ratings Services"
+  )
+ AND BinaryRating = 1
+  AND (OperatingMargin > 13.33 AND EBITMargin > 13.44 AND EBITDAMargin > 21.17)
+  AND (NetProfitMargin > 8.07 AND PreTaxProfitMargin > 11.12)
+  AND (ROA_ReturnOnAssets > 5.87 AND ROI_ReturnOnInvestment > 9.60)
+  AND LongTermDebt_Capital BETWEEN 0 AND 0.41
+  AND FreeCashFlowPerShare > 0.37
+GROUP BY Sector
+ORDER BY "Corporation Count" DESC
+
+
+-- QUERY 4.2 Top Corps Invest Gs
+
+SELECT Corporation, Ticker, Sector, 
+	CASE
+        WHEN Rating = 'AAA' THEN 'Prime'
+        WHEN Rating IN ('AA+', 'AA', 'AA-') THEN 'High'
+        WHEN Rating IN ('A+', 'A', 'A-') THEN 'Upper Medium'
+        WHEN Rating IN ('BBB+', 'BBB', 'BBB-') THEN 'Lower Medium'
+        ELSE 'Other'
+    END AS "Investment Grade", RatingAgency, 
+	CurrentRatio, LongTermDebt_Capital, Debt_EquityRatio, GrossMargin, OperatingMargin, EBITMargin, EBITDAMargin,
+	PreTaxProfitMargin, NetProfitMargin, AssetTurnover, ROE_ReturnOnEquity, ReturnOnTangibleEquity, ROA_ReturnOnAssets,
+	ROI_ReturnOnInvestment, OperatingCashFlowPerShare, FreeCashFlowPerShare
+FROM Corp_rate AS cr
+WHERE RatingAgency in ("Standard & Poor's Ratings Services", "Moody's Investors Service", "Fitch Ratings")
+  AND RatingDate = (
+    SELECT MAX(RatingDate)
+    FROM Corp_rate AS sub_cr
+    WHERE sub_cr.Corporation = cr.Corporation
+      AND sub_cr.RatingAgency = "Standard & Poor's Ratings Services"
+  )
+  AND BinaryRating = 1
+  AND (OperatingMargin > 13.33 AND EBITMargin > 13.44 AND EBITDAMargin > 21.17)
+  AND (NetProfitMargin > 8.07 AND PreTaxProfitMargin > 11.12)
+  AND (ROA_ReturnOnAssets > 5.87 AND ROI_ReturnOnInvestment > 9.60)
+  AND LongTermDebt_Capital BETWEEN 0 AND 0.41
+  AND FreeCashFlowPerShare > 0.37
+ORDER BY 
+    CASE
+        WHEN "Investment Grade" = 'Prime' THEN 1
+        WHEN "Investment Grade" = 'High' THEN 2
+        WHEN "Investment Grade" = 'Upper Medium' THEN 3
+        WHEN "Investment Grade" = 'Lower Medium' THEN 4
+        ELSE 5
+    END, Sector
+
+
+-- QUERY 4.3 Top Corps Prime Grade
+
+SELECT Corporation, Ticker, Sector, RatingAgency, 
+	CurrentRatio, LongTermDebt_Capital, Debt_EquityRatio, GrossMargin, OperatingMargin, EBITMargin, EBITDAMargin,
+	PreTaxProfitMargin, NetProfitMargin, AssetTurnover, ROE_ReturnOnEquity, ReturnOnTangibleEquity, ROA_ReturnOnAssets,
+	ROI_ReturnOnInvestment, OperatingCashFlowPerShare, FreeCashFlowPerShare
+FROM Corp_rate AS cr
+WHERE Rating = "AAA" 
+	AND RatingAgency in ("Standard & Poor's Ratings Services", "Moody's Investors Service", "Fitch Ratings")
+	AND RatingDate = (
+    SELECT MAX(RatingDate)
+    FROM Corp_rate AS sub_cr
+    WHERE sub_cr.Corporation = cr.Corporation
+      AND sub_cr.RatingAgency = "Standard & Poor's Ratings Services"
+  )
+  AND BinaryRating = 1
+  AND (OperatingMargin > 13.33 AND EBITMargin > 13.44 AND EBITDAMargin > 21.17)
+  AND (NetProfitMargin > 8.07 AND PreTaxProfitMargin > 11.12)
+  AND ROA_ReturnOnAssets > 5.87 AND ROI_ReturnOnInvestment > 9.60
+  AND LongTermDebt_Capital BETWEEN 0 AND 0.41
+  AND FreeCashFlowPerShare > 0
+
+
+-- QUERY 4.3 Top Corps Prime Grade - Ratings
+
+SELECT Corporation, Ticker, Sector, Rating, RatingDate, RatingAgency, 
+	CurrentRatio, LongTermDebt_Capital, Debt_EquityRatio, GrossMargin, OperatingMargin, EBITMargin, EBITDAMargin,
+	PreTaxProfitMargin, NetProfitMargin, AssetTurnover, ROE_ReturnOnEquity, ReturnOnTangibleEquity, ROA_ReturnOnAssets,
+	ROI_ReturnOnInvestment, OperatingCashFlowPerShare, FreeCashFlowPerShare
+FROM Corp_rate AS cr
+WHERE RatingAgency IN ("Standard & Poor's Ratings Services", "Moody's Investors Service", "Fitch Ratings")
+  AND Corporation IN ("Johnson & Johnson", "Intel Corp.", "Microsoft Corp.") 
+GROUP BY Corporation, Rating, RatingDate, Rating
+ORDER BY Corporation, RatingDate
+
+
+-- QUERY 4.4 Top Corps Speculative Grade
+
+SELECT Corporation, Ticker, Sector, 
+	CASE
+        WHEN Rating IN ('BB+', 'BB', 'BB-') THEN 'Speculative'
+        WHEN Rating IN ('B+', 'B', 'B-') THEN 'Highly Speculative'
+        WHEN Rating IN ('CCC+', 'CCC', 'CCC-', 'CC', 'C') THEN 'Substantial Risk'
+		WHEN Rating IN ('D') THEN 'In default'
+        ELSE 'Other'
+    END AS "Speculative Grade", RatingAgency, 
+	CurrentRatio, LongTermDebt_Capital, Debt_EquityRatio, GrossMargin, OperatingMargin, EBITMargin, EBITDAMargin,
+	PreTaxProfitMargin, NetProfitMargin, AssetTurnover, ROE_ReturnOnEquity, ReturnOnTangibleEquity, ROA_ReturnOnAssets,
+	ROI_ReturnOnInvestment, OperatingCashFlowPerShare, FreeCashFlowPerShare
+FROM Corp_rate AS cr
+WHERE RatingAgency in ("Standard & Poor's Ratings Services", "Moody's Investors Service", "Fitch Ratings")
+  AND RatingDate = (
+    SELECT MAX(RatingDate)
+    FROM Corp_rate AS sub_cr
+    WHERE sub_cr.Corporation = cr.Corporation
+      AND sub_cr.RatingAgency = "Standard & Poor's Ratings Services"
+  )
+  AND BinaryRating = 0
+  AND (OperatingMargin > 7.87 OR EBITMargin > 7.89 OR EBITDAMargin > 16.99)
+  AND (NetProfitMargin > 1.84 OR PreTaxProfitMargin > 3.08)
+  AND (ROA_ReturnOnAssets > 3.27 OR ROI_ReturnOnInvestment BETWEEN 5.37 AND 15)
+  AND LongTermDebt_Capital BETWEEN 0 and 0.51
+  AND OperatingCashFlowPerShare BETWEEN 0.12 and 0.31
+ORDER BY 
+    CASE
+        WHEN "Speculative Grade" = 'Speculative' THEN 1
+        WHEN "Speculative Grade" = 'Highly Speculative' THEN 2
+        WHEN "Speculative Grade" = 'Substantial Risk' THEN 3
+        WHEN "Speculative Grade" = 'In default' THEN 4
+        ELSE 5
+    END;
