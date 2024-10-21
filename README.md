@@ -32,7 +32,7 @@ Various visualizations, including bar plots, pie charts, and radar charts, were 
 
 ## 3. Findings  
 
-**Introduction to Credit Ratings and Financial Ratios**
+### Introduction to Credit Ratings and Financial Ratios  
 
 Credit ratings are crucial tools for assessing the creditworthiness of financial instruments, such as stocks and bonds. These ratings help investors understand the risk associated with investing in a company, primarily by evaluating the company’s ability to meet its debt obligations. A high credit rating suggests that the company is financially sound, with a low risk of defaulting on its debt, while a low credit rating indicates higher financial risk.  
 
@@ -50,50 +50,60 @@ The **three major rating agencies**—Moody’s, Standard & Poor’s (S&P), and 
 
 The analysis of these financial ratios, combined with the credit rating grades assigned by agencies, offers a comprehensive view of the company’s overall financial health.  
 
-**3.1. Sector Performance and Insights**
+### 3.1. Sector Performance and Insights  
 
 The dataset includes companies from various sectors, each contributing differently in terms of corporation count and their potential for investment opportunities. The Corporation Count by Sector donut chart highlights the distribution of companies across key sectors, shedding light on sector size and representation within the dataset.  
 
-![3 1](https://github.com/user-attachments/assets/e646e538-86e4-4e91-a216-97ab66dacde1)  
-• **Largest Sector by Company Count**  
+![3 1](https://github.com/user-attachments/assets/82fc7475-faa5-4e8f-ad63-5ddda019933b)  
+• **Largest Sector by Company Count**:  
 The Other sector, with 176 companies, represents the largest group in the dataset, comprising 16.4% of the total. This likely includes a mix of industries that do not fall neatly into predefined categories, suggesting diversity in this sector's offerings.  
-• **Second-Largest Sector**    
+• **Second-Largest Sector**:    
 Business Equipment (BusEq) follows closely with 160 companies (14.9%). This sector's prominence indicates a potentially strong focus on business infrastructure, which may correlate with high levels of investment in equipment and services supporting corporate productivity.  
-• **Manufacturing (Manuf) and Shops sectors**    
+• **Manufacturing (Manuf) and Shops sectors**:    
 Manufacturing, with 134 companies (12.5%), and Shops, with 112 companies (10.4%), also make up a significant portion of the dataset. These sectors likely represent traditional industries, providing stable economic activity and job creation. Their sizable presence suggests consistent financial activity and demand.  
-• **Smaller Sectors**    
+• **Smaller Sectors**:    
 The Money sector, with just 29 companies (2.7%), represents the smallest group in the dataset, followed by Durables (Durbl) and Chemicals (Chems), which also have relatively low company representation. These smaller sectors may reflect niche industries or sectors with higher volatility and potential financial risk.  
 
 While Business Equipment (BusEq), Manufacturing, and Utilities (Utils) have the most substantial presence, indicating higher industry engagement and corporate activity, smaller sectors like Money and Durables may present more targeted, higher-risk investment opportunities due to their smaller size and volatility.  
 
-This Corporation Count by Sector visualization offers a high-level view of sector participation, but further analysis into financial ratios and credit ratings for these sectors would be necessary to identify top-performing companies and sectors with investment-grade ratings. Additionally, it would be valuable to investigate how these sectors perform financially over time, particularly in terms of profitability, liquidity, and leverage, to assess their long-term viability.  
+The Corporation Count by Sector visualization offers a high-level view of sector participation, but further analysis into financial ratios and credit ratings for these sectors would be necessary to identify top-performing companies and sectors with investment-grade ratings. 
 
-**3.2. Credit Rating Distribution**
+### 3.2. Credit Rating Distribution  
 
-When analyzing the credit ratings, the majority of companies fall into the BBB category, indicating a relatively average credit risk. AAA rated companies, which represent the strongest credit quality, are rare. The speculative-grade companies are more diverse, with significant numbers falling into lower credit categories like BB and B.  
+The credit rating distribution provides a clear view of how companies are classified based on their financial stability and risk profile. Credit ratings range from AAA (the highest, representing the lowest risk) to D (default, representing companies in financial distress). The heatmap below highlights the distribution of corporations by rating, where the intensity of the colors reflects the number of companies within each rating category.  
 
-![3 2](https://github.com/user-attachments/assets/02ea855e-4df3-4fa2-a5c9-06b086c9a8c5)  
+![3 2](https://github.com/user-attachments/assets/9e1d2e27-8517-4dc7-b451-ff5385b5a7e0)  
+• **Most Common Rating**:  
+The BBB rating is the most prevalent, with 142 companies. This indicates that a significant portion of the companies fall into a lower-medium investment grade, representing moderate credit quality with a manageable level of risk. Additionally, BBB+ and BBB- are also common, with 126 and 135 companies respectively, reinforcing the trend towards the BBB range being the most populated.  
+• **High Credit Quality**:  
+Only 12 companies hold the AAA rating, which represents the highest possible credit quality with minimal risk of default. Similarly, the AA+, AA, and AA- ratings have relatively few companies, with 2, 30, and 8 companies respectively. This suggests that only a select group of corporations demonstrate the strongest financial positions.  
+• **Speculative-Grade Companies**:  
+A significant number of companies fall into speculative-grade categories, with BB+, BB, and B+ being particularly notable, having 110, 108, and 90 companies respectively. These ratings suggest higher financial risk, reflecting vulnerability to economic downturns or shifts in market conditions.  
+• **Lowest Credit Rating (D)**:  
+The dataset includes 2 companies rated D, meaning they are in default and unable to meet their financial obligations. These companies represent the highest level of risk for investors.  
 
-• Most common rating: BBB (142 companies)  
-• Least common rating: D (default) with only 2 companies.  
+The dataset is heavily skewed towards investment-grade ratings, particularly in the BBB range, indicating moderate but acceptable credit risk for many companies. This suggests a relatively stable financial outlook for a large portion of the dataset, though not the most robust. On the other hand, a significant number of companies fall into speculative-grade categories such as BB and B, highlighting the presence of corporations with higher financial risk but potentially higher returns. Companies with AAA ratings, representing the safest investment opportunities, are rare, reflecting the exclusive nature of this top-tier rating.   
 
-Insight: The dataset is skewed towards investment-grade ratings, especially BBB, which suggests a conservative risk profile for many companies, although speculative-grade companies with high potential return are also present.  
+### 3.3. Financial Health of Investment vs. Speculative Grade Companies  
 
-**3.3. Financial Health of Investment vs. Speculative Grade Companies**
+The radar chart compares the mean financial ratios of Investment Grade and Speculative Grade companies across 16 key financial metrics. This provides a clear visual representation of the relative strengths and weaknesses between these two categories of firms. Financial ratios such as Profitability, Liquidity, and Leverage are critical indicators of a company's ability to maintain financial health and manage risk.  
 
-Investment-grade companies (binary rating = 1) consistently show stronger financial health metrics compared to speculative-grade companies (binary rating = 0). These companies exhibit higher profitability margins, stronger liquidity, and lower leverage, indicating lower financial risk.  
+![3 3](https://github.com/user-attachments/assets/7d084c04-3b00-4e81-988b-887c12bc8241)  
+• **Profitability Metrics:**  
+Investment-grade companies demonstrate significantly stronger profitability metrics, particularly in ratios like Operating Margin (13.33% vs. 0.88%), EBIT Margin (13.44% vs. 0.89%), and EBITDA Margin (21.17% vs. 11.62%). This indicates that investment-grade firms are more efficient at generating earnings from their core operations. Speculative-grade companies exhibit negative or weaker margins in key metrics like Net Profit Margin (-4.80%) and PreTax Profit Margin (-4.39%), signaling financial instability and challenges in maintaining consistent profitability.  
+• **Liquidity Metrics:**  
+Investment-grade companies maintain a healthier Current Ratio (1.73 vs. 2.09), although speculative-grade firms show higher liquidity. This could suggest that speculative-grade firms are holding onto more liquid assets as a buffer against financial risk, possibly in response to their higher levels of volatility and risk.
+Operating Cash Flow per Share and Free Cash Flow per Share are stronger in investment-grade companies, further indicating their ability to generate sufficient cash flow to cover obligations and reinvest into the business.  
+• **Leverage and Debt Management:**  
+Investment-grade firms show much stronger control over debt, with lower levels of Debt to Equity (0.17 vs. -2.40) and Long-Term Debt to Capital (0.41 vs. 0.55). This reflects a more balanced and conservative approach to leveraging debt, which reduces financial risk and increases their resilience in periods of economic downturn. Speculative-grade companies display a negative Debt to Equity ratio, indicating significant financial distress and challenges in meeting debt obligations.  
+• **Return Metrics:**  
+Investment-grade companies significantly outperform in return-based metrics such as Return on Equity (ROE) (23.48% vs. 6.97%), Return on Assets (ROA) (5.87% vs. 0.31%), and Return on Investment (ROI) (9.60% vs. 1.30%). These metrics highlight their ability to efficiently utilize both assets and investments to generate profit. Speculative-grade companies show minimal or negative returns across the board, highlighting their struggles in efficiently managing assets and investments. 
+  
+Investment-grade companies are far more financially stable, with higher profitability, better leverage management, and stronger returns on assets and equity. Speculative-grade companies, in contrast, display significant financial distress, with negative or minimal profitability, higher leverage, and much weaker returns, suggesting they operate with much higher risk. These distinctions underline the importance of credit ratings as an indicator of financial health and risk exposure.
 
-• Profitability: Investment-grade companies have higher Operating Margins, EBIT Margins, and Pre-Tax Profit Margins, signaling more efficient operations.  
-• Liquidity: These companies also maintain better Current Ratios and Long-Term Debt to Capital ratios, reflecting their ability to cover short- and long-term obligations.  
-• Leverage: Lower leverage ratios suggest that investment-grade companies rely less on debt, making them financially more stable in the long term.  
+### 3.4. Best Performing Sectors by Financial Metrics
 
-In contrast, speculative-grade companies show weaker profitability and higher volatility in their financial ratios, indicating higher financial risk and vulnerability to market changes.  
-
-**3.4. Best Performing Sectors by Financial Metrics**
-
-Certain sectors, particularly Business Equipment (BusEq), stand out for housing top-performing companies with strong financial performance. Key financial metrics like Operating Margin, EBIT Margin, EBITDA Margin, and Return on Investment (ROI) are consistently higher in these sectors.  
-
-Criteria for top-performing sectors:  
+This section identifies the sectors that outperform others based on key financial metrics. The top-performing sectors are determined using specific criteria to highlight sectors with superior profitability, liquidity, and leverage. The criteria for top-performing sectors include:  
 • Operating Margin > 13.33  
 • EBIT Margin > 13.44  
 • EBITDA Margin > 21.17  
@@ -101,23 +111,29 @@ Criteria for top-performing sectors:
 • ROA > 5.87  
 • ROI > 9.60  
 • Free Cash Flow Per Share > 0.37  
-• Long-Term Debt to Capital between 0 and 0.41  
+• Long-Term Debt to Capital between 0 and 0.41   
 
-Insight: Companies within Business Equipment consistently meet these performance benchmarks, making the sector a strong candidate for investment focus due to their stable financial health and lower leverage.  
+Using these criteria, the sectors that meet or exceed these financial thresholds were classified as top-performing. Below is the detailed analysis, supported by a pie chart and radar chart.  
 
-**3.5. Best Performing Companies**
+![3 4 1](https://github.com/user-attachments/assets/f147344f-4124-45de-bf6d-cb88b5a5c4f2)  
+• **Top Performing Sectors**:   
+The pie chart shows that the Business Equipment (BusEq) sector leads with 31.2% of the top-performing companies based on above-average mean financial ratios. This is followed by Manufacturing (Manuf) at 18.8%, with sectors such as Healthcare (Hlth), Other, and Chemicals (Chems) each contributing 12.5%.  
+• **Sector Diversification**:   
+While BusEq dominates in terms of company count, several other sectors also exhibit strong financial performance, including Healthcare, Energy (Enrgy), Retail (Shops), and Utilities (Utils).  
+  
+![3 4 2](https://github.com/user-attachments/assets/3b9536ee-94b0-4e60-b712-1480e2a1f95f)  
+The radar chart visualizes the mean financial ratios across the top-performing sectors, focusing on 16 critical financial metrics.  
+• **Business Equipment (BusEq)** outperforms significantly in several profitability metrics, such as Operating Margin, EBIT Margin, and EBITDA Margin. These companies are also notable for strong Net Profit Margin and PreTax Profit Margin, indicating solid earnings performance.  
+• **Manufacturing (Manuf)** and **Healthcare (Hlth)** sectors demonstrate balanced performance across multiple ratios, with strong Gross Margins, Return on Investment (ROI), and Return on Assets (ROA). These sectors show higher stability and lower debt leverage, particularly in Debt to Equity and Long-Term Debt to Capital ratios.  
+• **Energy (Enrgy)** and **Utilities (Utils)** sectors have outliers in specific ratios, such as Gross Margin and Operating Margin, showcasing their operational efficiency, although Debt to Equity ratios are higher, reflecting their capital-intensive nature.  
+• **Chemicals (Chems)** and **Other** sectors exhibit more moderate performance but still rank above average in key ratios such as Return on Tangible Equity and Operating Cash Flow per Share, indicating strong cash flow generation and profitability management.  
+  
+The Business Equipment sector leads in overall financial strength, with robust profitability metrics. Manufacturing and Healthcare sectors also rank highly, reflecting balanced and efficient financial management. On the other hand, Energy and Utilities sectors demonstrate strong operational efficiency, albeit with higher debt levels, which is typical of capital-intensive industries. These sectors represent key areas for potential investment, given their strong financial health and resilience.   
 
-Analyzing the top-performing companies reveals industry leaders like Johnson & Johnson, Google LLC, and Apple Inc., which show strong financial performance across multiple metrics. These companies consistently outperform across key indicators such as Operating Margin, EBIT Margin, EBITDA Margin, and ROI.  
+### 3.5. Best Performing Companies
 
-Key financial ratios for top companies:  
-• Operating Margin > 13.33  
-• EBIT Margin > 13.44  
-• Net Profit Margin > 8.07  
-• Pre-Tax Profit Margin > 11.12  
 
-These top performers demonstrate strong operational efficiency, profitability, and financial stability. Johnson & Johnson, for example, shows a high Operating Margin and ROA, making it one of the most reliable companies from a financial perspective.  
-
-Visualization Insight: A radar chart can effectively compare these key financial ratios across the top-performing companies, providing a clear visual representation of their financial strengths.  
+ 
 
 ### **Key Insights**
 
