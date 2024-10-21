@@ -32,20 +32,47 @@ Various visualizations, including bar plots, pie charts, and radar charts, were 
 
 ## 3. Findings  
 
-***Discuss credit ratings and financial ratios as background for the analysis findings***   
+**Introduction to Credit Ratings and Financial Ratios**
+
+Credit ratings are crucial tools for assessing the creditworthiness of financial instruments, such as stocks and bonds. These ratings help investors understand the risk associated with investing in a company, primarily by evaluating the company’s ability to meet its debt obligations. A high credit rating suggests that the company is financially sound, with a low risk of defaulting on its debt, while a low credit rating indicates higher financial risk.  
+
+The **three major rating agencies**—Moody’s, Standard & Poor’s (S&P), and Fitch—are responsible for assigning credit ratings to companies and their financial instruments. These ratings range from investment grade to speculative grade, with each agency following a similar scale. The ratings are often categorized as follows:  
+• **Prime** (e.g., AAA from S&P or Aaa from Moody's) indicates the highest quality, with very low default risk.  
+• **High Grade** (e.g., AA, Aa) indicates a very strong ability to meet financial obligations.  
+• **Upper Medium** and **Lower Medium** Grades (e.g., A, BBB) reflect solid but less robust credit quality.  
+• **Speculative** Grades (e.g., BB, B) indicate vulnerabilities to default, especially in changing economic conditions.  
+• **Substantial Risk** and **In Default** categories represent companies facing significant risk of financial instability or those already unable to meet obligations.  
+
+**Financial ratios** play an equally important role in assessing a company’s financial health. These ratios can be grouped into three categories:  
+• **Profitability** ratios (e.g., Operating Margin, EBIT Margin, Net Profit Margin) measure the company's ability to generate income relative to revenue, costs, and expenses.  
+• **Liquidity** ratios (e.g., Current Ratio, Long-term Debt to Capital) assess the company’s capacity to meet its short-term obligations.  
+• **Leverage** ratios (e.g., Debt to Equity) evaluate the company’s reliance on debt financing compared to its equity.  
+
+The analysis of these financial ratios, combined with the credit rating grades assigned by agencies, offers a comprehensive view of the company’s overall financial health.  
 
 **3.1. Sector Performance and Insights**
 
-The dataset covers companies from various sectors, each contributing differently in terms of financial health and credit ratings. The Business Equipment sector (BusEq), for instance, includes the highest number of top-performing companies, particularly those with strong profitability and liquidity. On the other hand, sectors like Money show fewer companies with strong financial metrics, reflecting their higher volatility and potential risk.  
+The dataset includes companies from various sectors, each contributing differently in terms of corporation count and their potential for investment opportunities. The Corporation Count by Sector donut chart highlights the distribution of companies across key sectors, shedding light on sector size and representation within the dataset.  
 
-• Largest sector by company count: Other (176 companies)  
-• Smallest sector by company count: Money (29 companies)  
+![3 1](https://github.com/user-attachments/assets/e646e538-86e4-4e91-a216-97ab66dacde1)  
+• **Largest Sector by Company Count**  
+The Other sector, with 176 companies, represents the largest group in the dataset, comprising 16.4% of the total. This likely includes a mix of industries that do not fall neatly into predefined categories, suggesting diversity in this sector's offerings.  
+• **Second-Largest Sector**    
+Business Equipment (BusEq) follows closely with 160 companies (14.9%). This sector's prominence indicates a potentially strong focus on business infrastructure, which may correlate with high levels of investment in equipment and services supporting corporate productivity.  
+• **Manufacturing (Manuf) and Shops sectors**    
+Manufacturing, with 134 companies (12.5%), and Shops, with 112 companies (10.4%), also make up a significant portion of the dataset. These sectors likely represent traditional industries, providing stable economic activity and job creation. Their sizable presence suggests consistent financial activity and demand.  
+• **Smaller Sectors**    
+The Money sector, with just 29 companies (2.7%), represents the smallest group in the dataset, followed by Durables (Durbl) and Chemicals (Chems), which also have relatively low company representation. These smaller sectors may reflect niche industries or sectors with higher volatility and potential financial risk.  
 
-A pie chart reveals that sectors such as Business Equipment, Manufacturing, and Healthcare have the most investment-grade companies, while speculative-grade companies are more evenly distributed across sectors like Retail and Energy.  
+While Business Equipment (BusEq), Manufacturing, and Utilities (Utils) have the most substantial presence, indicating higher industry engagement and corporate activity, smaller sectors like Money and Durables may present more targeted, higher-risk investment opportunities due to their smaller size and volatility.  
+
+This Corporation Count by Sector visualization offers a high-level view of sector participation, but further analysis into financial ratios and credit ratings for these sectors would be necessary to identify top-performing companies and sectors with investment-grade ratings. Additionally, it would be valuable to investigate how these sectors perform financially over time, particularly in terms of profitability, liquidity, and leverage, to assess their long-term viability.  
 
 **3.2. Credit Rating Distribution**
 
 When analyzing the credit ratings, the majority of companies fall into the BBB category, indicating a relatively average credit risk. AAA rated companies, which represent the strongest credit quality, are rare. The speculative-grade companies are more diverse, with significant numbers falling into lower credit categories like BB and B.  
+
+![3 2](https://github.com/user-attachments/assets/02ea855e-4df3-4fa2-a5c9-06b086c9a8c5)  
 
 • Most common rating: BBB (142 companies)  
 • Least common rating: D (default) with only 2 companies.  
