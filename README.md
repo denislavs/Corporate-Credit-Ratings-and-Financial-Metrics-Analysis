@@ -54,7 +54,7 @@ The analysis of these financial ratios, combined with the credit rating grades a
 
 The dataset includes companies from various sectors, each contributing differently in terms of corporation count and their potential for investment opportunities. The Corporation Count by Sector donut chart highlights the distribution of companies across key sectors, shedding light on sector size and representation within the dataset.  
 
-![3 1](https://github.com/user-attachments/assets/82fc7475-faa5-4e8f-ad63-5ddda019933b)  
+![3 1](https://github.com/user-attachments/assets/08f3b740-1671-4051-b1e4-246cac22321b)  
 • **Largest Sector by Company Count**:  
 The Other sector, with 176 companies, represents the largest group in the dataset, comprising 16.4% of the total. This likely includes a mix of industries that do not fall neatly into predefined categories, suggesting diversity in this sector's offerings.  
 • **Second-Largest Sector**:    
@@ -132,8 +132,36 @@ The Business Equipment sector leads in overall financial strength, with robust p
 
 ### 3.5. Best Performing Companies
 
+The analysis of the 16 companies that meet the criteria for above-average performance across Prime, High, Upper Medium, and Lower Medium investment grades is based on key financial ratios that measure profitability, leverage, liquidity, and overall financial health. The radar charts below visually compare the performance of companies within these investment grades, providing insights into their financial strengths.  
 
- 
+**Prime and High Investment Grade Companies**  
+The Prime and High investment grade category consists of Johnson & Johnson (Prime), Google LLC, Apple Inc., and Rockwell Automation Inc. These companies demonstrate robust financial performance, particularly in profitability and liquidity, making them highly attractive to conservative investors.  
+
+![3 5 1](https://github.com/user-attachments/assets/07bef826-34b5-4438-ac0b-10f19ff7b47c)  
+• **Johnson & Johnson** shows a strong financial position with solid profitability ratios. Its **EBITDA Margin (33.71%)** and **Net Profit Margin (21.96%)** highlight its efficient operations, while maintaining a moderate **Long-Term Debt to Capital ratio (0.18)**, indicating stable leverage.  
+• **Google LLC** stands out with an exceptionally high **Current Ratio (5.92)**, which reflects its excellent liquidity and ability to meet short-term obligations. Moreover, Google demonstrates strong profitability with a **PreTax Profit Margin of 32.52%** and an **EBITDA Margin of 35.86%**.  
+• **Apple Inc.** shows competitive margins, particularly in **EBITDA Margin (35.29%)** and **Net Profit Margin (25.85%)**, suggesting highly efficient operations. Additionally, its **Return on Tangible Equity (44.74%)** underscores its ability to generate high returns for shareholders.  
+• **Rockwell Automation Inc.** maintains solid profitability with a **PreTax Profit Margin of 17.87%** and a **Return on Tangible Equity (36.67%)**, though its higher **Debt to Equity ratio (0.67)** suggests slightly elevated leverage compared to its peers.  
+
+**Upper Medium Investment Grade Companies**  
+The Upper Medium grade group includes Oracle Corp., Alibaba Group Holding Limited, Air Products and Chemicals Inc., Occidental Petroleum Corp., Johnson (S.C.) & Son Inc., Snap-on Inc., and Starbucks Corp. These companies exhibit well-rounded performance, excelling in profitability, returns, and operational efficiency.  
+
+![3 5 2](https://github.com/user-attachments/assets/2fbb5634-48d6-447c-b9ad-091fb971604a)  
+• **Oracle Corp.** demonstrates strong operational efficiency with a **Gross Margin of 76.42%** and an **EBITDA Margin of 41.63%**, making it a standout performer in profitability.  
+• **Alibaba Group** shows exceptional profitability, with a **Net Profit Margin of 70.66%**, significantly higher than most peers. Its **Free Cash Flow Per Share (0.76)** further highlights its operational strength.  
+• **Occidental Petroleum Corp.** displays impressive margins, particularly a **PreTax Profit Margin of 38.43%** and **Net Profit Margin of 29.20%**, showcasing its ability to generate substantial earnings.  
+• **Snap-on Inc.** demonstrates sound leverage control with a **Long-Term Debt to Capital ratio of 0.26**, positioning it as a financially stable company with a healthy capital structure.  
+• **Starbucks Corp.** shows competitive profitability with a **Gross Margin of 59.36%** and an **EBITDA Margin of 23.66%**, highlighting its operational efficiency despite a higher debt level.  
+
+**Lower Medium Investment Grade Companies**  
+The Lower Medium grade includes Illumina, Inc., Lam Research Corp., Newmont USA Ltd., United Utilities Water Finance PLC, and Southwestern Energy Co. These companies exhibit more variability in their financial performance, with some excelling in profitability, liquidity, or returns, while others show higher leverage.  
+
+![3 5 3](https://github.com/user-attachments/assets/5c178f5d-d506-48d7-b96f-2e166cc64253)  
+• **Illumina, Inc.** stands out with strong profitability metrics, including an **EBITDA Margin of 35.75%** and a **PreTax Profit Margin of 24.11%**, reflecting its ability to generate significant earnings. Its **Return on Tangible Equity (24.16%)** further emphasizes its shareholder value creation.  
+• **Lam Research Corp.** excels in cash flow generation, with a **Free Cash Flow Per Share of 3.85** and an **Operating Cash Flow Per Share of 3.27**, indicating strong operational cash flow efficiency.  
+• **Southwestern Energy Co.** shows the highest profitability in this group, with a **Gross Margin of 75.73%** and an **Operating Margin of 34.00%**. However, its **Debt to Equity ratio of 1.49** suggests elevated leverage, which could pose a risk in less favorable economic conditions.  
+
+Overall, the companies analyzed across the Prime, High, Upper Medium, and Lower Medium investment grades that meet the criteria for above-average performance display a range of financial strengths. Companies like Google LLC, Oracle Corp., and Illumina, Inc. lead in liquidity, profitability, and returns, positioning them as top performers within their respective investment grades. The radar charts visually encapsulate these insights, offering a clear comparison of key financial ratios and highlighting areas where each company excels.  
 
 ### **Key Insights**
 
