@@ -1,4 +1,4 @@
-# Corporate-Credit-Ratings-and-Financial-Metrics-Analysis
+# Corporate Credit Ratings and Financial Metrics Analysis
 ______________
 
 ## 1. Introduction
